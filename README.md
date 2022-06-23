@@ -4,10 +4,10 @@ SQL Server has a built-in self-signed cert for encrypted connection. However, th
 
 ## Set Up Server
 
-Run GenerateSelfSignedSqlAuthCert.ps1 with admin privilege. It does two things.
+Run [GenerateSelfSignedSqlAuthCert.ps1](GenerateSelfSignedSqlAuthCert.ps1) with admin privilege. It does two things.
 
 - Generates a self-signed cert named "SQL Auth Cert" into "LocalMachine\My".
-- Exports into file "sql_auth.cer" under current folder.
+- Exports cert into file "sql_auth.cer" under current folder.
 
 Follow steps below to grant SQL Server read access to the cert.
 
@@ -23,4 +23,4 @@ Follow steps below to have SQL Server use the cert for encrypted connection.
 
 ## Set Up Client
 
-Right-click on "sql_auth.cer" > Install Certificate > Current User > Place all certificates in the following store > Trusted Root Certification Authorities
+Right-click on the previously exported "sql_auth.cer" file > Install Certificate > Current User > Place all certificates in the following store > Trusted Root Certification Authorities
