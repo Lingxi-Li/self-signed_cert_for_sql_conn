@@ -2,25 +2,14 @@
 
 SQL Server has a built-in self-signed cert for encrypted connection. However, there is no official way to export it and have it trusted by client. Follow this guide to create a new self-signed cert, set it up to SQL Server for encrypted connection, and have it trusted by client.
 
-## Set Up Server
+Run [SetServer.ps1](SetServer.ps1) on server machine with admin privilege to
 
-Run [GenerateSelfSignedSqlAuthCert.ps1](GenerateSelfSignedSqlAuthCert.ps1) with admin privilege. It does two things.
+1. generate a self-signed cert with friendly name "SQL Auth Cert" into "Cert:\LocalMachine\My",
+1. export the cert into file "sql_auth.cer" under current folder,
+1. grant SQL service account read access to cert private key,
+1. set the cert to be used for encrypted connection,
+1. restart SQL service.
 
-- Generates a self-signed cert named "SQL Auth Cert" into "LocalMachine\My".
-- Exports cert into file "sql_auth.cer" under current folder.
+Run [SetClient.ps1](SetClient.ps1) on client machine with admin privilege to trust the cert by importing it to "Cert:\CurrentUser\Root".
 
-Follow steps below to grant SQL Server read access to the cert.
-
-1. Locate the cert in "Manage computer certificates" > "Personal" > "Certificates" > the one with Friendly Name = "SQL Auth Cert".
-2. Right-click on the cert > All Tasks > Manage Private Keys.
-3. Add SQL Server service account (e.g., "NT Service\MSSQLSERVER") and grant it read permission.
-
-Follow steps below to have SQL Server use the cert for encrypted connection.
-
-1. Open SQL Server Configuration Manager
-2. SQL Server Network Configuration > right-click on the item for the target instance (e.g., "Protocols for MSSQLSERVER") > Properties > Certificates tab > select "SQL Auth Cert" from the dropdown list.
-3. SQL Server Services > right-click on the item for the target SQL Server instance (e.g., "SQL Server (MSSQLSERVER)") > Restart.
-
-## Set Up Client
-
-Right-click on the previously exported "sql_auth.cer" file > Install Certificate > Current User > Place all certificates in the following store > Trusted Root Certification Authorities
+Run [TestConnection.ps1](TestConnection.ps1) on client machine to verify setup by establishing both non-encrypted and encrypted connections.
