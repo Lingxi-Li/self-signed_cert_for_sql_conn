@@ -40,7 +40,7 @@ $NewRule = New-Object System.Security.AccessControl.FileSystemAccessRule("NT Ser
 $Acl.SetAccessRule($NewRule)
 $Acl | Set-Acl
 
-$SqlInstanceRegKey = Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server" | Where-Object { $_.Name.EndsWith($SqlInstanceName) }
+$SqlInstanceRegKey = Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server" | Where-Object { $_.Name.StartsWith("MSSQL") -and $_.Name.EndsWith($SqlInstanceName) }
 $SuperSocketNetLibRegKeyPath = "$($SqlInstanceRegKey)\MSSQLServer\SuperSocketNetLib".Replace("HKEY_LOCAL_MACHINE", "HKLM:")
 Set-ItemProperty -Path $SuperSocketNetLibRegKeyPath -Name "Certificate" -Value $Cert.Thumbprint.ToLowerInvariant() -Force
 Restart-Service -Name $SqlInstanceName -Force
